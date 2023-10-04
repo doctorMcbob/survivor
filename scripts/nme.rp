@@ -1,0 +1,107 @@
+NME|0,0,0,0|True|
+START:0 skello0_0 -16,-16
+FOLLOW:0 empty -16,-16
+SKELLO0:0 skello0_0 -16,-16
+SKELLO0:10 skello0_1 -16,-16
+SKELLO1:0 skello1_0 -16,-16
+SKELLO1:10 skello1_1 -16,-16
+SKELLO2:0 skello2_0 -16,-16
+SKELLO2:10 skello2_1 -16,-16
+DEMON0:0 demon0_0 -16,-16
+DEMON0:10 demon0_1 -16,-16
+DEMON1:0 demon1_0 -16,-16
+DEMON1:10 demon1_1 -16,-16
+DEMON2:0 demon2_0 -16,-16
+DEMON2:10 demon2_1 -16,-16
+GIRL0:0 girl0_0 -16,-16
+GIRL0:10 girl0_1 -16,-16
+GIRL1:0 girl1_0 -16,-16
+GIRL1:10 girl1_1 -16,-16
+GIRL2:0 girl2_0 -16,-16
+GIRL2:10 girl2_1 -16,-16
+WAIT:0 empty -16,-16
+
+|START:0|
+set self state FOLLOW
+set self image skello
+set self speed 2
+set self hp 10
+set self drops exp0
+if COLLIDE?
+   set self state WAIT
+   break
+endif
+set self tangible 1
+
+|WAIT:0|
+if not COLLIDE?
+   set self state FOLLOW
+   set self tangible 1
+endif
+
+|FOLLOW:0|
+exec followPlayer
+img self.image + _0
+
+|FOLLOW:10|
+exec followPlayer
+img self.image + _1
+
+|FOLLOW:20|
+exec followPlayer
+img self.image + _1
+set self frame 0
+
+|followPlayer|
+set self x_vel 0
+set self y_vel 0
+
+if player0.x > self.x
+   set self x_vel self.speed
+   set self direction 1
+endif
+
+if player0.x < self.x
+   set self x_vel 0 - self.speed
+   set self direction -1
+endif
+
+if player0.y > self.y
+   set self y_vel self.speed
+endif
+
+if player0.y < self.y
+   set self y_vel 0 - self.speed
+endif
+
+if self.x_vel and self.y_vel
+
+if RAND?
+   set self x_vel self.speed
+   if RAND?
+      set self x_vel self.x_vel * -1
+   endif
+   break
+endif
+set self y_vel self.speed
+if RAND?
+   set self y_vel self.y_vel * -1
+endif
+break
+endif
+
+if self.x_vel nor self.y_vel
+   set self y_vel self.speed
+   if RAND?
+      set self y_vel self.y_vel * -1
+   endif
+   break
+endif
+
+if self.y_vel nor self.x_vel
+   set self x_vel self.speed
+   if RAND?
+      set self x_vel self.x_vel * -1
+   endif
+   break
+endif

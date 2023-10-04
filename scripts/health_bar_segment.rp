@@ -1,0 +1,50 @@
+HUD|0,0,0,0|False|
+START:0 REDHB 0,0
+RED:0 REDHB 0,0
+PINK:0 PINKHB 0,0
+BLACK:0 BLACKHB 0,0
+
+|START:0|
+set self state RED
+set self number ""
+for letter self.name
+   if letter in health_bar_segment
+      break
+   endif
+   set self number self.number + letter
+endfor
+set self number int self.number
+set self upperbound player0.max_hp // 17 * self.number
+set self lowerbound player0.max_hp // 17 * self.number - 1
+
+if self.upperbound == 0
+   set self lowerbound 0
+   set self upperbound 1
+endif
+set self off_x self.x - player0.x
+set self off_y self.y - player0.y
+
+|RED:0|
+exec follow
+if player0.hp < self.upperbound
+   set self state PINK
+endif
+
+|PINK:0|
+exec follow
+if player0.hp > self.upperbound
+   set self state RED
+endif
+if player0.hp < self.lowerbound
+   set self state BLACK
+endif
+
+|BLACK:0|
+exec follow
+if player0.hp > self.lowerbound
+   set self state PINK
+endif
+
+|follow|
+set self x player0.x + self.off_x
+set self y player0.y + self.off_y

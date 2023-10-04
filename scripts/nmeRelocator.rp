@@ -1,0 +1,20 @@
+MGMT|0,0,0,0|False|
+START:0 empty 0,0
+FOLLOW:0 empty 0,0
+
+|START:0|
+set self state FOLLOW
+set self off_x self.x - player0.x
+set self off_y self.y - player0.y
+
+|FOLLOW:0|
+set self x player0.x + self.off_x
+set self y player0.y + self.off_y
+
+|COLLIDE|
+if self.spawner
+   set self tangible 0
+   set self state WAIT
+   set self x self.spawner.x
+   set self y self.spawner.y
+endif

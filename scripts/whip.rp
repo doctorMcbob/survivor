@@ -1,0 +1,29 @@
+ATK|0,0,0,0|False|
+START:0 whip0_0 0,0
+WHIP0:0 whip0_0 0,0
+WHIP0:3 whip0_1 0,0
+WHIP0:6 whip0_2 0,0
+WHIP0:9 whip0_3 0,0
+WHIP1:0 whip1_0 0,0
+WHIP1:3 whip1_1 0,0
+WHIP1:6 whip1_2 0,0
+WHIP1:9 whip1_3 0,0
+
+|START:0|
+set self state WHIP0
+
+|COLLIDE|
+if self.spawner
+   set self hp self.hp - player0.attack_stat - player0.base_attack - player0.whip_bonus_damage
+
+   if self.hp <= 0
+      create self.drops self.name + drop self.w / 2 + self.x self.h / 2 + self.y
+      goodbye
+   endif
+endif
+
+|WHIP0:12|
+goodbye
+
+|WHIP1:12|
+goodbye

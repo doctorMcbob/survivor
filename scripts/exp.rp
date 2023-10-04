@@ -1,0 +1,30 @@
+XP|0,0,0,0|False|
+START:0 rupee -8,0
+EXP:0 rupee -8,0
+BYE:0 rupee -8,0
+COLLECT:0 rupee -8,0
+
+|START:0|
+set self state EXP
+set self dist 64
+
+|EXP:0|
+set self calcx player0.w / 2 + player0.x - self.x
+set self calcy player0.h / 2 + player0.y - self.y
+if abs self.calcx < self.dist
+   if abs self.calcy < self.dist
+      set self state COLLECT
+   endif
+endif
+
+|COLLECT:0|
+set self calcx player0.x - self.x / 2
+set self calcy player0.y - self.y / 2
+set self x self.x + self.calcx
+set self y self.y + self.calcy
+
+|COLLECT:12|
+set self state BYE
+
+|BYE:0|
+goodbye

@@ -397,7 +397,6 @@ def _intern_strings(SCRIPTS):
         UNIQUE_STRINGS.append("w")
     if "h" not in UNIQUE_STRINGS:
         UNIQUE_STRINGS.append("h")
-        
     UNIQUE_STRINGS.sort()
     string_data_dot_c = "#include \"stringmachine.h\"\n#include <stddef.h>\n"
     string_data_dot_c += f"int NUM_STRINGS = {len(UNIQUE_STRINGS)};\n"

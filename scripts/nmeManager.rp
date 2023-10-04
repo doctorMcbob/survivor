@@ -1,0 +1,44 @@
+MGMT|0,0,0,0|False|
+START:0 empty 0,0
+
+|START:0|
+# this will be where we script the spawns
+exec everyFour0
+
+|START:100|
+
+|START:300|
+exec everyFour1
+
+|START:400|
+
+|START:600|
+exec everyFour2
+
+|START:700|
+
+|START:1200|
+exec everyFour3
+
+|START:1300|
+
+|START:1500|
+set self frame 0
+
+|everyFour0|
+set self spawnNumber self.frame * 4 % 58
+set nmeSpawner + self.spawnNumber spawn 1
+
+|everyFour1|
+set self spawnNumber self.frame * 4 + 1 % 58
+set nmeSpawner + self.spawnNumber spawn 1
+
+|everyFour2|
+set self spawnNumber self.frame * 4 + 2 % 58
+set nmeSpawner + self.spawnNumber spawn 1
+
+|everyFour3|
+set self spawnNumber self.frame * 4 + 3 % 58
+set nmeSpawner + self.spawnNumber spawn 1
+
+

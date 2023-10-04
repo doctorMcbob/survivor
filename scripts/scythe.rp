@@ -1,0 +1,33 @@
+SCHYTHE|0,0,0,0|False|
+START:0 scyth0_0 0,0
+SCYTHE0:0 scyth0_0 0,0
+SCYTHE0:3 scyth0_1 0,0
+SCYTHE0:6 scyth0_2 0,0
+SCYTHE0:9 scyth0_3 0,0
+
+
+|START:0|
+set self timer 300
+set self state SCYTHE0
+set self physics 1
+
+|SCYTHE0:0|
+set self timer self.timer - 1
+if self.timer <= 0
+   goodbye
+endif
+
+|SCYTHE0:12|
+exec SCYTHE0:0
+set self frame 0
+
+|COLLIDE|
+if self.spawner
+   set self hp self.hp - player0.attack_stat - player0.base_attack - player0.scythe_bonus_damage
+
+   if self.hp <= 0
+      create self.drops self.name + drop self.w / 2 + self.x self.h / 2 + self.y
+      goodbye
+   endif
+endif
+

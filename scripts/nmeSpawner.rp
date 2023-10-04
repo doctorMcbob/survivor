@@ -1,0 +1,57 @@
+MGMT|0,0,0,0|False|
+START:0 empty 0,0
+FOLLOW:0 empty 0,0
+
+|START:0|
+set self state FOLLOW
+set self off_x self.x - player0.x
+set self off_y self.y - player0.y
+
+set self max_nme 2
+set self nme_number 0
+
+set self spawn 0
+
+|FOLLOW:0|
+exec updateSpawn
+set self x player0.x + self.off_x
+set self y player0.y + self.off_y
+
+|updateSpawn|
+if not self.spawn
+   break
+endif
+
+set self spawn 0
+
+set self calc 1
+for num range self.max_nme
+   if not self.calc
+      break
+   endif
+   set self nme_name self.name + nme + num
+   set self calc inworld self.nme_name
+endfor
+
+if not self.nme_name or self.calc
+   set self spawn 1
+   break
+endif
+
+create nme0 self.nme_name self.x self.y
+
+set self.nme_name spawner self.name
+set self nme_level self.frame / 4500 % 3
+set self nme_toggle self.frame / 1500 % 3
+
+if self.nme_toggle == 0
+   set self.nme_name image skello + self.nme_level
+endif
+if self.nme_toggle == 1
+   set self.nme_name image demon + self.nme_level
+endif
+if self.nme_toggle == 2
+   set self.nme_name image girl + self.nme_level
+endif
+
+

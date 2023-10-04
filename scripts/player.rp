@@ -1,9 +1,15 @@
 PLAYER|0,0,0,0|False|
-START:0 player0 -16,0
-WALK:0 player0 -16,0
-WALK:10 player1 -16,0
+START:0 player0 -16,-16
+WALK:0 player0 -16,-16
+WALK:10 player1 -16,-16
+HURT:0 player0 -16,-16
+HURT:5 empty 0,0
+HURT:7 player0 -16,-16
+HURT:10 player1 -16,-16
+DEAD:0 empty -16,-16
 
 |START:0|
+set self exp 0
 set self base_speed 4
 set self speed_stat  0
 
@@ -14,12 +20,23 @@ set self hp 50
 set self max_hp 50
 
 set self auto_healing 1
-set self auto_healing_per 60
+set self auto_healing_per 1000
 set self auto_healing_counter 0
 
 set self state WALK
 
 focus ROOT self
+
+set self whip_level 1
+set self whip_bonus_damage 4
+set self whip_per 60
+set self whip_counter 0
+
+set self scythe_level 1
+set self scythe_bonus_damage 2
+set self scythe_per 50
+set self scythe_counter 0
+set self scythe_dir 0
 
 # when moving to red pants deluxe 2, remove these lines and set the input state in the arcade machine
 set self _input_name PLAYER1
@@ -27,10 +44,27 @@ set self _input_name PLAYER1
 |WALK:0|
 exec updateAutoHeal
 exec updateMovement
+exec updateWhip
+exec updateScythe
 
 |WALK:20|
 exec WALK:0
 set self frame -1
+
+|HURT:0|
+exec updateAutoHeal
+exec updateMovement
+exec updateWhip
+exec updateScythe
+
+|HURT:20|
+if self.hp <= 0
+   set self state DEAD
+   break
+endif
+exec WALK:0
+set self frame -1
+set self state WALK
 
 |updateAutoHeal|
 set self auto_healing_counter self.auto_healing_counter + 1
@@ -48,10 +82,98 @@ if inpDOWN
    set self y self.y + self.speed_stat + self.base_speed
 endif
 if inpLEFT
+   set self direction -1
    set self x self.x - self.speed_stat - self.base_speed
 endif
 if inpRIGHT
+   set self direction 1
    set self x self.x - self.speed_stat + self.base_speed
 endif
 
+|updateWhip|
+if self.whip_level == 0
+   break
+endif
 
+set self whip_counter self.whip_counter + 1
+if self.whip_counter < self.whip_per
+   break
+endif
+
+set self whip_counter 0
+
+if self.whip_level == 1
+   set self wname self.name + whip0
+   create whip0 self.wname self.x + self.w self.y
+   set self.wname direction self.direction * -1
+   if self.direction == -1
+      set self.wname x self.wname.x - self.wname.w - self.w
+   endif
+endif
+
+if self.whip_level == 2
+   set self wname self.name + whip0
+   create whip0 self.wname self.x + self.w self.y - 16
+   set self.wname direction self.direction * -1
+   if self.direction == -1
+      set self.wname x self.wname.x - self.wname.w - self.w
+   endif
+   set self wname self.name + whip1
+   create whip0 self.wname self.x + self.w self.y + 16
+   set self.wname direction self.direction * -1
+   if self.direction == -1
+      set self.wname x self.wname.x - self.wname.w - self.w
+   endif
+endif
+
+|updateScythe|
+if self.scythe_level == 0
+   break
+endif
+
+set self scythe_counter self.scythe_counter + 1
+if self.scythe_counter < self.scythe_per
+   break
+endif
+
+set self scythe_counter 0
+
+if self.scythe_level
+   set self sname self.name + scythe + self.scythe_dir
+   create scythe0 self.sname self.w / 2 + self.x self.h / 2 + self.y
+   if self.scythe_dir == 0
+      set self.sname x_vel -2
+      set self.sname y_vel -2
+   endif
+   if self.scythe_dir == 1
+      set self.sname x_vel 2
+      set self.sname y_vel -2
+   endif
+   if self.scythe_dir == 2
+      set self.sname x_vel 2
+      set self.sname y_vel 2
+   endif
+   if self.scythe_dir == 3
+      set self.sname x_vel -2
+      set self.sname y_vel 2
+   endif
+
+   set self scythe_dir self.scythe_dir + 1
+   if self.scythe_dir >= 4
+      set self scythe_dir 0
+   endif
+endif
+
+|COLLIDE|
+if self.spawner
+   if related.state == DEAD
+      break
+   endif
+   if related.state == HURT
+      if related.frame < 10
+         break
+      endif
+   endif
+   set related hp related.hp - 1
+   set related state HURT
+endif
